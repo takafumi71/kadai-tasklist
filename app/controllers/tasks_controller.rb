@@ -4,10 +4,7 @@ class TasksController < ApplicationController
   
   
   def index
-    if logged_in?
-      @task = current_user.tasks.build
-      @tasks = current_user.tasks.order(id: :desc)
-    end
+    @tasks = current_user.tasks.order(id: :desc)
   end
 
   def show
@@ -57,6 +54,13 @@ class TasksController < ApplicationController
   
   def task_params
     params.require(:task).permit(:content, :status)
+  end
+  
+  def correct_user
+    @tasks = current_user.tasks.find_by(id: params[:id])
+    unless @tasks
+      redirect_to root_url
+    end
   end
   
 end
